@@ -1,70 +1,5 @@
 <?php
 include "koneksi.php";
-
-$error_nama = "";
-$error_jenis = "";
-$error_komentar = "";
-
-$nama = "";
-$jenis = "";
-$komentar = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    if (empty($_POST) === "") {
-
-
-        if (empty($_POST["nama"])) {
-            $error_nama = "Nama tidak boleh kosong";
-        } else {
-            $nama = cek_input($_POST["nama"]);
-            if (!preg_match("/^[a-zA-Z ]*$/", $nama)) {
-                $error_nama = "Inputan hanya boleh huruf dan spasi";
-            }
-        }
-
-        if (empty($_POST["jenis"])) {
-            $error_jenis = "Jenis belum di pilih";
-        }
-
-        if (empty($_POST["komentar"])) {
-            $error_komentar = "komentar tidak boleh kosong";
-        }
-    } else {
-
-        if ($_POST["hp"] == "") {
-            $hp = "-";
-        } else {
-            $hp = $_POST['hp'];
-        }
-
-        $nama      = $_POST['nama'];
-        $jenis      = $_POST['jenis'];
-        $hp         = $hp;
-        $komentar   = base64_encode($_POST['komentar']);
-
-        $simpan = mysqli_query($koneksi, "INSERT INTO tb_user(nama, jenis, hp, komentar)VALUES('$nama','$jenis','$hp', '$komentar')");
-        if ($simpan) {
-?>
-            <script type="text/javascript">
-                alert("data berhasil disimpan");
-                location.replace('index.php')
-            </script>
-<?php
-        } else {
-            echo "gagal";
-        }
-    }
-}
-
-function cek_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
 ?>
 
 <!doctype html>
@@ -90,48 +25,46 @@ function cek_input($data)
 
     <div class="container">
         <h3 class="mb-3 mt-3">Form Input</h3>
-        <form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" autocomplete="off">
+        <form method="POST" action="simpan.php" autocomplete="off">
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Nama</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="nama" <?= ($error_nama != "" ? "is-invalid" : ""); ?>>
-                    <span class="text-danger"><?= $error_nama; ?></span>
+                    <input type="text" class="form-control" name="nama">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Jenis</label>
                 <div class="col-sm-6">
-                    <select class="form-control" name="jenis" <?= ($error_jenis != "" ? "is-invalid" : ""); ?>>
+                    <select class="form-control" name="jenis">
                         <option value="">Pilih Salah Satu</option>
                         <option value="Manusia">Manusia</option>
                         <option value="Elf">Elf</option>
                         <option value="Tumbuh - Tumbuhan">Tumbuh - Tumbuhan</option>
                     </select>
-                    <span class="text-danger"><?= $error_jenis; ?></span>
+
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">HP</label>
                 <div class="col-sm-6">
-                    <input type="text" value="" class="form-control" name="hp" onkeypress="return hanyaAngka(event)">
+                    <input type="text" class="form-control" name="hp" onkeypress="return hanyaAngka(event)">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Komentar</label>
                 <div class="col-sm-6">
-                    <textarea class="form-control" name="komentar" rows="5" <?= ($error_komentar != "" ? "is-invalid" : ""); ?>></textarea>
-                    <span class="text-danger"><?= $error_komentar; ?></span>
+                    <textarea class="form-control" name="komentar" rows="5"></textarea>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-6">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> SAVE</button>
+                    <button type="submit" name="Submit" value="Submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> SAVE</button>
                 </div>
             </div>
 
